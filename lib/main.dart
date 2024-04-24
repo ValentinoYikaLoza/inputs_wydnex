@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inputs_wydnex/inputs/provider.dart';
+import 'package:inputs_wydnex/widgets/code_input.dart';
+import 'package:inputs_wydnex/widgets/date_input.dart';
 import 'package:inputs_wydnex/widgets/input_wydnex.dart';
+import 'package:inputs_wydnex/widgets/password_input.dart';
 import 'package:inputs_wydnex/widgets/phone_input.dart';
 
 void main() {
@@ -28,6 +31,7 @@ class MainApp extends ConsumerWidget {
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changeFirstName(value);
                   },
+                  keyboardType: TextInputType.name,
                   label: 'First Name',
                 ),
                 InputWydnex(
@@ -35,6 +39,7 @@ class MainApp extends ConsumerWidget {
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changeLastName(value);
                   },
+                  keyboardType: TextInputType.name,
                   label: 'Last Name',
                 ),
                 InputWydnex(
@@ -42,9 +47,10 @@ class MainApp extends ConsumerWidget {
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changeEmail(value);
                   },
+                  keyboardType: TextInputType.emailAddress,
                   label: 'Email',
                 ),
-                InputWydnex(
+                PasswordInput(
                   value: inputs.password,
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changePassword(value);
@@ -63,6 +69,7 @@ class MainApp extends ConsumerWidget {
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changeDNI(value);
                   },
+                  keyboardType: TextInputType.number,
                   label: 'DNI',
                 ),
                 InputWydnex(
@@ -70,16 +77,17 @@ class MainApp extends ConsumerWidget {
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changeRUC(value);
                   },
+                  keyboardType: TextInputType.number,
                   label: 'RUC',
                 ),
-                InputWydnex(
+                CodeInput(
                   value: inputs.code,
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changeCode(value);
                   },
                   label: 'Code',
                 ),
-                InputWydnex(
+                DateInput(
                   value: inputs.date,
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changeDate(value);
@@ -91,6 +99,7 @@ class MainApp extends ConsumerWidget {
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changeURL(value);
                   },
+                  keyboardType: TextInputType.url,
                   label: 'URL',
                 ),
                 InputWydnex(
@@ -98,6 +107,7 @@ class MainApp extends ConsumerWidget {
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changeComment(value);
                   },
+                  keyboardType: TextInputType.multiline,
                   label: 'Comment',
                 ),
               ],

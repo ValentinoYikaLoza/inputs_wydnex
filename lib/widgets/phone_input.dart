@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inputs_wydnex/inputs/form_wydnex.dart';
-import 'package:inputs_wydnex/inputs/provider.dart';
 import 'package:inputs_wydnex/models/country_response.dart';
 import 'package:inputs_wydnex/widgets/input_wydnex.dart';
 
@@ -71,9 +70,9 @@ class _PhoneInputState extends ConsumerState<PhoneInput> {
       // Assuming 'peru' is a Country object or a way to identify the desired country:
       selectedCountry ??= fetchedCountries
           .firstWhere((country) => country.name.common.toLowerCase() == 'peru');
-      ref.read(inputsProvider.notifier).changePhone(
-          const FormWydnex(value: '+51'),
-        );
+      widget.onChanged(
+        FormWydnex(value: '+51', validators: widget.value.validators),
+      );
     } catch (e) {
       print('Error al cargar los países: $e');
       // Manejar el error adecuadamente, como mostrar un mensaje al usuario
@@ -118,12 +117,12 @@ class _PhoneInputState extends ConsumerState<PhoneInput> {
                         onTap: () {
                           setState(() {
                             selectedCountry = countries[index];
-                            ref
-                                .read(inputsProvider.notifier)
-                                .changePhone(FormWydnex(
+                            widget.onChanged(
+                              FormWydnex(
                                   value:
                                       '$root${suffixes.substring(1, suffixes.length - 1)}',
-                                ));
+                                  validators: widget.value.validators),
+                            );
                             Navigator.of(context).pop();
                           });
                         },
@@ -142,38 +141,50 @@ class _PhoneInputState extends ConsumerState<PhoneInput> {
 
   @override
   Widget build(BuildContext context) {
-    final inputs = ref.watch(inputsProvider);
-
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 20),
-            child: selectedCountry != null
-                ? Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => showCountryDialog(),
-                        child: Image.network(
+          if (selectedCountry != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: GestureDetector(
+                onTap: () => showCountryDialog(),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1.5,
+                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(5))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        Image.network(
                           selectedCountry!.flags.png,
                           width: 30,
                           height: 20,
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(selectedCountry!.idd.root.toString()),
-                      Text(selectedCountry!.idd.suffixes.toString().substring(1,
-                          selectedCountry!.idd.suffixes.toString().length - 1)),
-                    ],
-                  )
-                : const Text('nulo'),
-          ),
+                        const SizedBox(width: 10),
+                        Text(selectedCountry!.idd.root.toString()),
+                        Text(selectedCountry!.idd.suffixes.toString().substring(
+                            1,
+                            selectedCountry!.idd.suffixes.toString().length -
+                                1)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Expanded(
             child: InputWydnex(
-              value: inputs.phone,
+              keyboardType: TextInputType.phone,
+              value: widget.value,
               onChanged: (value) {
-                ref.read(inputsProvider.notifier).changePhone(value);
+                widget.onChanged(value);
               },
               label: widget.label,
             ),

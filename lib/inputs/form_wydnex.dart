@@ -17,7 +17,7 @@ class FormWydnex<T> {
   const FormWydnex({
     required this.value,
     this.validators = const [],
-    this.isPure = true,
+    this.isTouched = false,
   });
 
   final T value;
@@ -28,9 +28,8 @@ class FormWydnex<T> {
   bool get isInvalid => errorMessage != null;
 
   String? get errorMessage {
-
     if (this.validators.contains(Validators.required)) {
-      if(value == ''){
+      if (value == '') {
         return 'Este campo es requerido';
       }
     }
@@ -40,19 +39,20 @@ class FormWydnex<T> {
           .hasMatch(value.toString())) {
         print('> valor incorrecto');
 
-        
         return 'Ingrese un nombre válido (solo letras y espacios)';
       }
     }
 
     if (this.validators.contains(Validators.lastName)) {
-      if (!RegExp(r"^[a-zA-ZÀ-ÿ']+(\s[a-zA-ZÀ-ÿ']+)*$").hasMatch(value.toString())) {
+      if (!RegExp(r"^[a-zA-ZÀ-ÿ']+(\s[a-zA-ZÀ-ÿ']+)*$")
+          .hasMatch(value.toString())) {
         return 'Ingrese un apellido válido';
       }
     }
 
     if (this.validators.contains(Validators.email)) {
-      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.toString())) {
+      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+          .hasMatch(value.toString())) {
         return 'Ingrese un correo electrónico válido (por ejemplo, example@example.com)';
       }
     }
@@ -167,11 +167,11 @@ class FormWydnex<T> {
     return null;
   }
 
-  final bool isPure;
+  final bool isTouched;
 
-  FormWydnex<T> touched() {
+  FormWydnex<T> touch() {
     return copyWith(
-      isPure: false,
+      isTouched: true,
     );
   }
 
@@ -182,11 +182,11 @@ class FormWydnex<T> {
   }
 
   FormWydnex<T> copyWith({
-    bool? isPure,
+    bool? isTouched,
     T? value,
   }) =>
       FormWydnex<T>(
-        isPure: isPure ?? this.isPure,
+        isTouched: isTouched ?? this.isTouched,
         validators: this.validators,
         value: value ?? this.value,
       );
