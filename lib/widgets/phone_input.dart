@@ -1,21 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inputs_wydnex/inputs/form_wydnex.dart';
 import 'package:inputs_wydnex/inputs/provider.dart';
 import 'package:inputs_wydnex/models/country_response.dart';
 import 'package:inputs_wydnex/widgets/input_wydnex.dart';
 
 class PhoneInput extends ConsumerStatefulWidget {
-  final TextEditingController controller;
+  final FormWydnex<String> value;
+  final void Function(FormWydnex<String> value) onChanged;
   final String label;
-  final String? error;
-  final bool focus;
   const PhoneInput({
     super.key,
-    required this.controller,
-    this.label = 'Telefono',
-    this.error,
-    this.focus = false,
+    required this.value,
+    required this.onChanged,
+    required this.label,
   });
 
   @override
@@ -26,13 +25,10 @@ class _PhoneInputState extends ConsumerState<PhoneInput> {
   Country? selectedCountry;
 
   late List<Country> countries = []; // Lista de países
-  late FocusNode phoneFocusNode;
   @override
   void initState() {
     super.initState();
     fetchAndSetCountries(); // Llama a la función para cargar los países al iniciar la aplicación
-    phoneFocusNode = FocusNode();
-    widget.controller.text = '+54';
   }
 
   static Future<List<Country>> fetchCountries() async {
@@ -73,8 +69,11 @@ class _PhoneInputState extends ConsumerState<PhoneInput> {
         countries.addAll(fetchedCountries);
       });
       // Assuming 'peru' is a Country object or a way to identify the desired country:
-      selectedCountry ??= fetchedCountries.firstWhere(
-          (country) => country.name.common.toLowerCase() == 'argentina');
+      selectedCountry ??= fetchedCountries
+          .firstWhere((country) => country.name.common.toLowerCase() == 'peru');
+      ref.read(inputsProvider.notifier).changePhone(
+          const FormWydnex(value: '+51'),
+        );
     } catch (e) {
       print('Error al cargar los países: $e');
       // Manejar el error adecuadamente, como mostrar un mensaje al usuario
@@ -119,15 +118,13 @@ class _PhoneInputState extends ConsumerState<PhoneInput> {
                         onTap: () {
                           setState(() {
                             selectedCountry = countries[index];
-                            widget.controller.text =
-                                '$root${suffixes.substring(1, suffixes.length - 1)}';
+                            ref
+                                .read(inputsProvider.notifier)
+                                .changePhone(FormWydnex(
+                                  value:
+                                      '$root${suffixes.substring(1, suffixes.length - 1)}',
+                                ));
                             Navigator.of(context).pop();
-                            // Remueve el foco del widget actual
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            // Enfoca el campo de texto phoneController después de un pequeño retraso
-                            Future.delayed(Duration.zero, () {
-                              phoneFocusNode.requestFocus();
-                            });
                           });
                         },
                       );

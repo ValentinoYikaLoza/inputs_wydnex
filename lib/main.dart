@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inputs_wydnex/inputs/provider.dart';
 import 'package:inputs_wydnex/widgets/input_wydnex.dart';
+import 'package:inputs_wydnex/widgets/phone_input.dart';
 
 void main() {
   runApp(const ProviderScope(child: MainApp()));
@@ -50,7 +51,7 @@ class MainApp extends ConsumerWidget {
                   },
                   label: 'Password',
                 ),
-                InputWydnex(
+                PhoneInput(
                   value: inputs.phone,
                   onChanged: (value) {
                     ref.read(inputsProvider.notifier).changePhone(value);

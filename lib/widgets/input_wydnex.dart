@@ -4,7 +4,7 @@ import 'package:inputs_wydnex/inputs/form_wydnex.dart';
 class InputWydnex extends StatefulWidget {
   const InputWydnex({
     super.key,
-    required this.value,
+    required this.value, 
     required this.onChanged,
     required this.label,
   });
