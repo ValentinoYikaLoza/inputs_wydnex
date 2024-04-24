@@ -1,8 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inputs_wydnex/inputs/provider.dart';
 import 'package:inputs_wydnex/models/country_response.dart';
+import 'package:inputs_wydnex/widgets/input_wydnex.dart';
 
-class PhoneInput extends StatefulWidget {
+class PhoneInput extends ConsumerStatefulWidget {
   final TextEditingController controller;
   final String label;
   final String? error;
@@ -16,10 +19,10 @@ class PhoneInput extends StatefulWidget {
   });
 
   @override
-  State<PhoneInput> createState() => _PhoneInputState();
+  _PhoneInputState createState() => _PhoneInputState();
 }
 
-class _PhoneInputState extends State<PhoneInput> {
+class _PhoneInputState extends ConsumerState<PhoneInput> {
   Country? selectedCountry;
 
   late List<Country> countries = []; // Lista de países
@@ -70,8 +73,8 @@ class _PhoneInputState extends State<PhoneInput> {
         countries.addAll(fetchedCountries);
       });
       // Assuming 'peru' is a Country object or a way to identify the desired country:
-      selectedCountry ??= fetchedCountries
-          .firstWhere((country) => country.name.common.toLowerCase() == 'argentina');
+      selectedCountry ??= fetchedCountries.firstWhere(
+          (country) => country.name.common.toLowerCase() == 'argentina');
     } catch (e) {
       print('Error al cargar los países: $e');
       // Manejar el error adecuadamente, como mostrar un mensaje al usuario
@@ -140,17 +143,10 @@ class _PhoneInputState extends State<PhoneInput> {
     );
   }
 
-  String? validate(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Por favor, ingrese su número de teléfono';
-    } else if (!RegExp(r'^\+\d{9,14}$').hasMatch(value)) {
-      return 'Ingrese un número de teléfono válido (por ejemplo, +51123456789)';
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
+    final inputs = ref.watch(inputsProvider);
+
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -177,21 +173,12 @@ class _PhoneInputState extends State<PhoneInput> {
                 : const Text('nulo'),
           ),
           Expanded(
-            child: TextFormField(
-              controller: widget.controller,
-              keyboardType: TextInputType.phone,
-              focusNode: phoneFocusNode,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: InputDecoration(
-                labelText: widget.label,
-                errorText: widget.error,
-              ),
-              validator: validate,
-              onEditingComplete: () {
-                if (validate(widget.controller.text) == null && widget.focus) {
-                  FocusScope.of(context).unfocus(); // Oculta el teclado virtual
-                }
+            child: InputWydnex(
+              value: inputs.phone,
+              onChanged: (value) {
+                ref.read(inputsProvider.notifier).changePhone(value);
               },
+              label: widget.label,
             ),
           ),
         ],

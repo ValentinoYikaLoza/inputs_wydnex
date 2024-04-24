@@ -1,119 +1,104 @@
 import 'package:flutter/material.dart';
-// import 'package:inputs_wydnex/screens/home.dart';
-import 'package:inputs_wydnex/widgets/code_input.dart';
-import 'package:inputs_wydnex/widgets/comment_input.dart';
-import 'package:inputs_wydnex/widgets/date_input.dart';
-import 'package:inputs_wydnex/widgets/dni_input.dart';
-import 'package:inputs_wydnex/widgets/email_input.dart';
-import 'package:inputs_wydnex/widgets/first_name_input.dart';
-import 'package:inputs_wydnex/widgets/last_name_input.dart';
-import 'package:inputs_wydnex/widgets/password_input.dart';
-import 'package:inputs_wydnex/widgets/phone_input.dart';
-import 'package:inputs_wydnex/widgets/ruc_input.dart';
-import 'package:inputs_wydnex/widgets/url_input.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inputs_wydnex/inputs/provider.dart';
+import 'package:inputs_wydnex/widgets/input_wydnex.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const ProviderScope(child: MainApp()));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController firstNameController = TextEditingController();
-    final TextEditingController lastNameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController phoneController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController dniController = TextEditingController();
-    final TextEditingController rucController = TextEditingController();
-    final TextEditingController codeController = TextEditingController();
-    final TextEditingController urlController = TextEditingController();
-    final TextEditingController dateController = TextEditingController();
-    final TextEditingController commentsController = TextEditingController();
-    String? firstNameError;
-    String? lastNameError;
-    String? emailError;
-    String? phoneError;
-    String? passwordError;
-    String? dniError;
-    String? rucError;
-    String? codeError;
-    String? urlError;
-    String? dateError;
-    String? commentsError;
+  Widget build(BuildContext context, ref) {
+    final inputs = ref.watch(inputsProvider);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        // body: InputsWydnex(),
         body: Padding(
           padding: const EdgeInsets.all(10),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                FirstNameInput(
-                  controller: firstNameController,
-                  label: 'Names',
-                  error: firstNameError,
-                  focus: false,
+                InputWydnex(
+                  value: inputs.firstName,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changeFirstName(value);
+                  },
+                  label: 'First Name',
                 ),
-                LastNameInput(
-                  controller: lastNameController,
-                  error: lastNameError,
-                  focus: true,
+                InputWydnex(
+                  value: inputs.lastName,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changeLastName(value);
+                  },
+                  label: 'Last Name',
                 ),
-                PhoneInput(
-                  controller: phoneController,
-                  error: phoneError,
-                  focus: true,
+                InputWydnex(
+                  value: inputs.email,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changeEmail(value);
+                  },
+                  label: 'Email',
                 ),
-                EmailInput(
-                  controller: emailController,
-                  error: emailError,
-                  focus: true,
+                InputWydnex(
+                  value: inputs.password,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changePassword(value);
+                  },
+                  label: 'Password',
                 ),
-                PasswordInput(
-                  controller: passwordController,
-                  error: passwordError,
-                  focus: true,
+                InputWydnex(
+                  value: inputs.phone,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changePhone(value);
+                  },
+                  label: 'Phone',
                 ),
-                DniInput(
-                  controller: dniController,
-                  error: dniError,
-                  focus: true,
+                InputWydnex(
+                  value: inputs.dni,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changeDNI(value);
+                  },
+                  label: 'DNI',
                 ),
-                RucInput(
-                  controller: rucController,
-                  error: rucError,
-                  focus: true,
+                InputWydnex(
+                  value: inputs.ruc,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changeRUC(value);
+                  },
+                  label: 'RUC',
                 ),
-                DateInput(
-                  controller: dateController,
-                  error: dateError,
-                  focus: true,
+                InputWydnex(
+                  value: inputs.code,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changeCode(value);
+                  },
+                  label: 'Code',
                 ),
-                CodeInput(
-                  controller: codeController,
-                  error: codeError,
-                  focus: true,
+                InputWydnex(
+                  value: inputs.date,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changeDate(value);
+                  },
+                  label: 'Date',
                 ),
-                UrlInput(
-                  controller: urlController,
-                  error: urlError,
-                  focus: true,
+                InputWydnex(
+                  value: inputs.url,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changeURL(value);
+                  },
+                  label: 'URL',
                 ),
-                CommentInput(
-                  controller: commentsController,
-                  error: commentsError,
+                InputWydnex(
+                  value: inputs.comment,
+                  onChanged: (value) {
+                    ref.read(inputsProvider.notifier).changeComment(value);
+                  },
+                  label: 'Comment',
                 ),
-                TextButton(onPressed: (){
-                  if (firstNameError != ""){
-                    print(firstNameController.text);
-                  }
-                }, child: const Text('click!'))
-                
               ],
             ),
           ),
